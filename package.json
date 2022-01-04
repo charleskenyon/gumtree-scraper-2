@@ -5,7 +5,8 @@
   "source": "src/db-iterator-lambda/index.ts",
   "private": true,
   "scripts": {
-    "dev": "ts-node --project ./tsconfig.json --files src/db-iterator-lambda/index.ts"
+    "build:lambda": "tsc --project tsconfig.src.json",
+    "dev": "./run-lambda-locally.sh db-iterator-lambda"
   },
   "pre-commit": [
     "test"
@@ -13,10 +14,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.89",
     "@types/jest": "^27.0.3",
+    "@types/node": "^17.0.7",
     "@types/ramda": "^0.27.49",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
+    "aws-sdk": "^2.1049.0",
     "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
