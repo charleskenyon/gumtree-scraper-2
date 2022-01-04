@@ -1,0 +1,24 @@
+ 
+ {
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "declaration": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "strictNullChecks": true,
+    "strict": true
+  },
+  "include": [
+    "infrastructure/**/*"
+  ],
+  "exclude": [
+    "src/**/*",
+    "./typings"
+  ]
+}
+   

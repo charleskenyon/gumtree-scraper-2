@@ -7,3 +7,7 @@ node_modules/
 .directory
 .Trash-*
 .nfs*
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out

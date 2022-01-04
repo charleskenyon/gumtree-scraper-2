@@ -8,9 +8,6 @@
     "build:lambda": "tsc --project tsconfig.src.json",
     "dev": "./run-lambda-locally.sh db-iterator-lambda"
   },
-  "pre-commit": [
-    "test"
-  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -20,6 +17,8 @@
     "@types/ramda": "^0.27.49",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
+    "aws-cdk": "^2.3.0",
+    "aws-cdk-lib": "^2.3.0",
     "aws-sdk": "^2.1049.0",
     "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
