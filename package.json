@@ -1,0 +1,34 @@
+{
+  "name": "gumtree-scraper-2",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/db-iterator-lambda/index.ts",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node --project ./tsconfig.json --files src/db-iterator-lambda/index.ts"
+  },
+  "pre-commit": [
+    "test"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^27.0.3",
+    "@types/ramda": "^0.27.49",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.3.1",
+    "pre-commit": "^1.2.2",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.0.7",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "ramda": "^0.27.1"
+  }
+}
