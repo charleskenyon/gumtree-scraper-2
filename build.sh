@@ -21,10 +21,10 @@ npm run build:lambda
 for LAMBDA_DIR in db-iterator-lambda; do
     echo $LAMBDA_DIR
     S3_KEY="$REPO_NAME/$LAMBDA_DIR.zip"
-    cp package.json "dist/$LAMBDA_DIR"
-    cp package-lock.json "dist/$LAMBDA_DIR"
+    cp "src/$LAMBDA_DIR/package.json" "dist/$LAMBDA_DIR"
+    cp "src/$LAMBDA_DIR/package-lock.json" "dist/$LAMBDA_DIR"
     cd "dist/$LAMBDA_DIR"
-    npm install --silent --only=prod
+    npm i
     rm *.zip
     zip -r $LAMBDA_DIR.zip *
     aws s3 cp --region $REGION "$LAMBDA_DIR.zip" "s3://$LAMBDA_S3_BUCKET/$S3_KEY"

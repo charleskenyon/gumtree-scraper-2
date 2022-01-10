@@ -27,6 +27,7 @@ export class GumtreeScraperStack extends Stack {
       code: lambda.Code.fromBucket(lambdaS3Bucket, dbIteratorLambdaS3Key),
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_14_X,
+      reservedConcurrentExecutions: 1,
     });
 
     new events.Rule(this, 'DbIteratorLambdaScheduler', {
