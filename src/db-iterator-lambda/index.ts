@@ -8,7 +8,7 @@ AWS.config.update({
 
 export const handler: Handler = async (): Promise<string> => {
   const val = await new AWS.DynamoDB({ apiVersion: '2012-08-10' })
-    .listTables()
+    .scan({ TableName: 'QueryTable' })
     .promise();
   console.log(val);
   return val.toString();
