@@ -1,5 +1,7 @@
 import { Duration, Stack, StackProps, Tags } from 'aws-cdk-lib';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as eventsTargets from 'aws-cdk-lib/aws-events-targets';
@@ -16,10 +18,34 @@ export class GumtreeScraperStack extends Stack {
       'dbIteratorLambdaS3Key'
     );
 
+    const queryTable = new dynamodb.Table(this, 'QueryTable', {
+      partitionKey: { name: 'query', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PROVISIONED,
+      readCapacity: 1,
+      writeCapacity: 1,
+    });
+
     const lambdaS3Bucket = s3.Bucket.fromBucketName(
       this,
       'LambdaS3Bucket',
       lambdaS3BucketName
+    );
+
+    const dbIteratorLambdaRole = new iam.Role(this, 'DbIteratorLambdaRole', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName(
+          'service-role/AWSLambdaBasicExecutionRole'
+        ),
+      ],
+      roleName: `${scraperName}-${dbIteratorLambdaName}-role`,
+    });
+
+    dbIteratorLambdaRole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [queryTable.tableArn],
+        actions: ['dynamodb:Scan.'],
+      })
     );
 
     const dbIteratorLambda = new lambda.Function(this, `DbIteratorLambda`, {
@@ -40,3 +66,6 @@ export class GumtreeScraperStack extends Stack {
     Tags.of(this).add('Application', 'Gumtree Scraper');
   }
 }
+
+// AWSLambdaDynamoDBExecutionRole
+// AWSLambdaSQSQueueExecutionRole
