@@ -26,7 +26,7 @@ for LAMBDA_DIR in db-iterator-lambda; do
     npm i
     rm *.zip
     FOLDER_MD5_HASH=$(find . -type f -exec md5sum {} + | LC_ALL=C sort | md5sum)
-    S3_KEY="$REPO_NAME/$LAMBDA_DIR/$FOLDER_MD5_HASH.zip"
+    S3_KEY="$REPO_NAME/$LAMBDA_DIR/${FOLDER_MD5_HASH::-3}.zip"
     zip -r $LAMBDA_DIR.zip *
     aws s3 cp --region $REGION "$LAMBDA_DIR.zip" "s3://$LAMBDA_S3_BUCKET/$S3_KEY"
 
