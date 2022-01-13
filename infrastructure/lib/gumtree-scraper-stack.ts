@@ -44,7 +44,7 @@ export class GumtreeScraperStack extends Stack {
     dbIteratorLambdaRole.addToPolicy(
       new iam.PolicyStatement({
         resources: [queryTable.tableArn],
-        actions: ['dynamodb:Scan.'],
+        actions: ['dynamodb:Scan'],
       })
     );
 
@@ -54,6 +54,7 @@ export class GumtreeScraperStack extends Stack {
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_14_X,
       reservedConcurrentExecutions: 1,
+      role: dbIteratorLambdaRole,
     });
 
     new events.Rule(this, 'DbIteratorLambdaScheduler', {
