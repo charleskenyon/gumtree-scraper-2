@@ -23,7 +23,7 @@ export class GumtreeScraperStack extends Stack {
       billingMode: dynamodb.BillingMode.PROVISIONED,
       readCapacity: 1,
       writeCapacity: 1,
-      tableName: 'QueryTable',
+      tableName: 'queryTable',
     });
 
     const lambdaS3Bucket = s3.Bucket.fromBucketName(

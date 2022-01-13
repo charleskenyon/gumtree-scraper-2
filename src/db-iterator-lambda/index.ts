@@ -8,9 +8,9 @@ AWS.config.update({
 
 export const handler: Handler = async (): Promise<string> => {
   const val = await new AWS.DynamoDB({ apiVersion: '2012-08-10' })
-    .scan({ TableName: 'QueryTable' })
+    .scan({ TableName: 'queryTable' })
     .promise();
-  console.log(val);
+  console.log('test fingerprinting', val);
   return val.toString();
 };
 
