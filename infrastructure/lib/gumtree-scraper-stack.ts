@@ -13,8 +13,6 @@ export class GumtreeScraperStack extends Stack {
     const lambdaS3BucketName = this.node.tryGetContext('lambdaS3Bucket');
     const optS3Key = this.node.tryGetContext('optS3Key');
 
-    console.log(optS3Key);
-
     const queryTable = new dynamodb.Table(this, 'QueryTable', {
       partitionKey: { name: 'query', type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PROVISIONED,

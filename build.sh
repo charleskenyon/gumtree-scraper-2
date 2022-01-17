@@ -20,13 +20,21 @@ npm run build:lambda
 
 for LAMBDA_DIR in opt db-iterator-lambda; do
     echo $LAMBDA_DIR
-    cp "src/$LAMBDA_DIR/package.json" "dist/$LAMBDA_DIR"
-    cp "src/$LAMBDA_DIR/package-lock.json" "dist/$LAMBDA_DIR"
-    cd "dist/$LAMBDA_DIR"
-    npm i
+    if [ $LAMBDA_DIR = "opt" ]; then
+        cp "src/$LAMBDA_DIR/nodejs/package.json" "dist/$LAMBDA_DIR/nodejs"
+        cp "src/$LAMBDA_DIR/nodejs/package-lock.json" "dist/$LAMBDA_DIR/nodejs"
+        cd "dist/$LAMBDA_DIR/nodejs"
+        npm i
+        cd ../
+    else
+        cp "src/$LAMBDA_DIR/package.json" "dist/$LAMBDA_DIR"
+        cp "src/$LAMBDA_DIR/package-lock.json" "dist/$LAMBDA_DIR"
+        cd "dist/$LAMBDA_DIR"
+        npm i
+    fi
     rm *.zip
-    FOLDER_MD5_HASH=$(find . -type f -exec md5sum {} + | LC_ALL=C sort | md5sum)
-    S3_KEY="$REPO_NAME/$LAMBDA_DIR/${FOLDER_MD5_HASH::-3}.zip"
+    FOLDER_MD5_HASH=$(find . -type f -exec md5sum {} + | LC_ALL=C sort | md5sum | awk '{ print substr( $0, 1, length($0)-3 ) }')
+    S3_KEY="$REPO_NAME/$LAMBDA_DIR/$FOLDER_MD5_HASH.zip"
     zip -r $LAMBDA_DIR.zip *
     aws s3 cp --region $REGION "$LAMBDA_DIR.zip" "s3://$LAMBDA_S3_BUCKET/$S3_KEY"
 

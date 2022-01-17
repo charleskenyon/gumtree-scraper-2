@@ -1,19 +1,14 @@
-import R from 'ramda';
 import { Handler } from 'aws-lambda';
+import { getFormattedDynamoDbItems } from '/opt/nodejs/utils';
 import { AWS, QUERY_TABLE_NAME } from '/opt/nodejs/constants';
 import { QueryItem } from '/opt/nodejs/types';
-
-const getFormattedQueries = R.pipe(
-  R.prop('Items'),
-  R.map(AWS.DynamoDB.Converter.unmarshall)
-) as (data: AWS.DynamoDB.ScanOutput) => QueryItem[];
 
 export const handler: Handler = async (): Promise<string> => {
   const queriesData = await new AWS.DynamoDB()
     .scan({ TableName: QUERY_TABLE_NAME })
     .promise();
-  const queries = getFormattedQueries(queriesData);
-  console.log(queries);
+  const queries = getFormattedDynamoDbItems<QueryItem>(queriesData);
+  console.log(queries, 'UPDATE');
   return queries.toString();
 };
 
