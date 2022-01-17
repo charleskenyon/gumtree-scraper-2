@@ -1,17 +1,20 @@
-import AWS from 'aws-sdk';
+import R from 'ramda';
 import { Handler } from 'aws-lambda';
+import { AWS, QUERY_TABLE_NAME } from '/opt/nodejs/constants';
+import { QueryItem } from '/opt/nodejs/types';
 
-AWS.config.update({
-  region: 'eu-west-2',
-  maxRetries: 3,
-});
+const getFormattedQueries = R.pipe(
+  R.prop('Items'),
+  R.map(AWS.DynamoDB.Converter.unmarshall)
+) as (data: AWS.DynamoDB.ScanOutput) => QueryItem[];
 
 export const handler: Handler = async (): Promise<string> => {
-  const val = await new AWS.DynamoDB({ apiVersion: '2012-08-10' })
-    .scan({ TableName: 'queryTable' })
+  const queriesData = await new AWS.DynamoDB()
+    .scan({ TableName: QUERY_TABLE_NAME })
     .promise();
-  console.log('test fingerprinting', val);
-  return val.toString();
+  const queries = getFormattedQueries(queriesData);
+  console.log(queries);
+  return queries.toString();
 };
 
 // https://www.gumtree.com/search?search_category=all&q=2+bed+flat=&search_location=London

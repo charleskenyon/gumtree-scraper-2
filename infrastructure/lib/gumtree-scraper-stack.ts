@@ -1,6 +1,7 @@
 import { Stack, StackProps, Tags } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 import { DbIteratorLambdaConstruct } from './constructs/db-iterator-lambda-construct';
 
@@ -10,6 +11,9 @@ export class GumtreeScraperStack extends Stack {
 
     const scraperName = 'gumtree-scraper';
     const lambdaS3BucketName = this.node.tryGetContext('lambdaS3Bucket');
+    const optS3Key = this.node.tryGetContext('optS3Key');
+
+    console.log(optS3Key);
 
     const queryTable = new dynamodb.Table(this, 'QueryTable', {
       partitionKey: { name: 'query', type: dynamodb.AttributeType.STRING },
@@ -25,10 +29,16 @@ export class GumtreeScraperStack extends Stack {
       lambdaS3BucketName
     );
 
+    const optLambdaLayer = new lambda.LayerVersion(this, 'OptLambdaLayer', {
+      compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+      code: lambda.Code.fromBucket(lambdaS3Bucket, optS3Key),
+    });
+
     new DbIteratorLambdaConstruct(this, 'DbIteratorLambdaConstruct', {
       scraperName,
       queryTable,
       lambdaS3Bucket,
+      optLambdaLayer,
     });
 
     Tags.of(this).add('Application', 'Gumtree Scraper');

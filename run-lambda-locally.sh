@@ -11,9 +11,9 @@ npm run build:lambda
 
 docker run --rm \
 -v "$PWD/dist/$FOLDER_NAME":/var/task:ro,delegated \
+-v "$PWD/src/$FOLDER_NAME/node_modules":/node_modules \
+-v "$PWD/dist/opt":/opt:ro,delegated \
 -e AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID \
 -e AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY \
 lambci/lambda:nodejs12.x \
 index.handler '{}'
-
-rm -rf dist

@@ -6,11 +6,13 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as eventsTargets from 'aws-cdk-lib/aws-events-targets';
 import { Construct } from 'constructs';
+import { LambdaApplication } from 'aws-cdk-lib/aws-codedeploy';
 
 interface DbIteratorLambdaConstructStackProps extends StackProps {
   readonly scraperName: string;
   readonly queryTable: dynamodb.ITable;
   readonly lambdaS3Bucket: s3.IBucket;
+  readonly optLambdaLayer: lambda.ILayerVersion;
 }
 
 export class DbIteratorLambdaConstruct extends Construct {
@@ -50,6 +52,7 @@ export class DbIteratorLambdaConstruct extends Construct {
       runtime: lambda.Runtime.NODEJS_14_X,
       reservedConcurrentExecutions: 1,
       role: dbIteratorLambdaRole,
+      layers: [props.optLambdaLayer],
     });
 
     new events.Rule(this, 'DbIteratorLambdaScheduler', {

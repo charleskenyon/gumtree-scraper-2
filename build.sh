@@ -18,7 +18,7 @@ echo "uploading lambda zips to s3..."
 
 npm run build:lambda
 
-for LAMBDA_DIR in db-iterator-lambda; do
+for LAMBDA_DIR in opt db-iterator-lambda; do
     echo $LAMBDA_DIR
     cp "src/$LAMBDA_DIR/package.json" "dist/$LAMBDA_DIR"
     cp "src/$LAMBDA_DIR/package-lock.json" "dist/$LAMBDA_DIR"
@@ -32,6 +32,8 @@ for LAMBDA_DIR in db-iterator-lambda; do
 
     if [ $LAMBDA_DIR = "db-iterator-lambda" ]; then
         DB_ITERATOR_LAMBDA_S3_KEY=$S3_KEY
+    elif [ $LAMBDA_DIR = "opt" ]; then
+        OPT_S3_KEY="${S3_KEY}"
     fi
 
     cd ../../
@@ -45,6 +47,7 @@ npx cdk synth \
     --context region=$REGION \
     --context accountId=$ACCOUNT_ID \
     --context lambdaS3Bucket=$LAMBDA_S3_BUCKET \
+    --context optS3Key=$OPT_S3_KEY \
     --context dbIteratorLambdaS3Key=$DB_ITERATOR_LAMBDA_S3_KEY \
     --quiet || post_and_exit "cdk synth failed"
 
@@ -61,4 +64,5 @@ npx cdk deploy \
     --context region=$REGION \
     --context accountId=$ACCOUNT_ID \
     --context lambdaS3Bucket=$LAMBDA_S3_BUCKET \
+    --context optS3Key=$OPT_S3_KEY \
     --context dbIteratorLambdaS3Key=$DB_ITERATOR_LAMBDA_S3_KEY || post_and_exit "cdk build failed"
