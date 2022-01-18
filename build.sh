@@ -3,6 +3,7 @@
 STACK_NAME="GumtreeScraperStack"
 REGION=$(aws configure get region)
 ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+QUEUE_URL=$(aws sqs get-queue-url --queue-name gumtree-scraper-queue --query 'QueueUrl' --output text)
 LAMBDA_S3_BUCKET=crk-lambda-functions
 
 if [ -z "${REPO_NAME}" ]; then
@@ -18,7 +19,7 @@ echo "uploading lambda zips to s3..."
 
 npm run build:lambda
 
-for LAMBDA_DIR in opt db-iterator-lambda; do
+for LAMBDA_DIR in opt db-iterator-lambda query-scraper-lambda; do
     echo $LAMBDA_DIR
     if [ $LAMBDA_DIR = "opt" ]; then
         cp "src/$LAMBDA_DIR/nodejs/package.json" "dist/$LAMBDA_DIR/nodejs"
@@ -40,6 +41,8 @@ for LAMBDA_DIR in opt db-iterator-lambda; do
 
     if [ $LAMBDA_DIR = "db-iterator-lambda" ]; then
         DB_ITERATOR_LAMBDA_S3_KEY=$S3_KEY
+    elif [ $LAMBDA_DIR = "query-scraper-lambda" ]; then
+        QUERY_SCRAPER_LAMBDA_S3_KEY="${S3_KEY}"
     elif [ $LAMBDA_DIR = "opt" ]; then
         OPT_S3_KEY="${S3_KEY}"
     fi
@@ -57,13 +60,15 @@ npx cdk synth \
     --context lambdaS3Bucket=$LAMBDA_S3_BUCKET \
     --context optS3Key=$OPT_S3_KEY \
     --context dbIteratorLambdaS3Key=$DB_ITERATOR_LAMBDA_S3_KEY \
+    --context queryScraperLambdaS3Key=$QUERY_SCRAPER_LAMBDA_S3_KEY \
+    --context queueUrl=$QUEUE_URL \
     --quiet || post_and_exit "cdk synth failed"
 
 echo "checking cloudformation template..."
 
 CLOUDFORMATION_TEMPLATE="cdk.out/$STACK_NAME.template.json"
 
-checkov --file $CLOUDFORMATION_TEMPLATE --skip-check "CKV_AWS_28,CKV_AWS_116,CKV_AWS_119" || post_and_exit "checkov validation failed"
+checkov --file $CLOUDFORMATION_TEMPLATE --skip-check "CKV_AWS_27,CKV_AWS_28,CKV_AWS_116,CKV_AWS_119" || post_and_exit "checkov validation failed"
 
 echo "starting cloudformation deployment..."
 
@@ -73,4 +78,6 @@ npx cdk deploy \
     --context accountId=$ACCOUNT_ID \
     --context lambdaS3Bucket=$LAMBDA_S3_BUCKET \
     --context optS3Key=$OPT_S3_KEY \
-    --context dbIteratorLambdaS3Key=$DB_ITERATOR_LAMBDA_S3_KEY || post_and_exit "cdk build failed"
+    --context dbIteratorLambdaS3Key=$DB_ITERATOR_LAMBDA_S3_KEY \
+    --context queueUrl=$QUEUE_URL \
+    --context queryScraperLambdaS3Key=$QUERY_SCRAPER_LAMBDA_S3_KEY || post_and_exit "cdk build failed"

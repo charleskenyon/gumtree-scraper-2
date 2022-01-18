@@ -5,6 +5,7 @@ AWS.config.update({
   maxRetries: 3,
   apiVersions: {
     dynamodb: '2012-08-10',
+    sqs: '2012-11-05',
   },
 });
 

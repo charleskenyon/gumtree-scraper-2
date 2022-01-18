@@ -3,6 +3,7 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as eventsTargets from 'aws-cdk-lib/aws-events-targets';
 import { Construct } from 'constructs';
@@ -12,9 +13,10 @@ interface DbIteratorLambdaConstructStackProps extends StackProps {
   readonly queryTable: dynamodb.ITable;
   readonly lambdaS3Bucket: s3.IBucket;
   readonly optLambdaLayer: lambda.ILayerVersion;
+  readonly queryScraperQueue: sqs.IQueue;
 }
 
-export class DbIteratorLambdaConstruct extends Construct {
+export default class DbIteratorLambdaConstruct extends Construct {
   constructor(
     scope: Construct,
     id: string,
@@ -26,6 +28,7 @@ export class DbIteratorLambdaConstruct extends Construct {
     const dbIteratorLambdaS3Key = this.node.tryGetContext(
       'dbIteratorLambdaS3Key'
     );
+    const queueUrl = this.node.tryGetContext('queueUrl');
 
     const dbIteratorLambdaRole = new iam.Role(this, 'DbIteratorLambdaRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
@@ -44,6 +47,13 @@ export class DbIteratorLambdaConstruct extends Construct {
       })
     );
 
+    dbIteratorLambdaRole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [props.queryScraperQueue.queueArn],
+        actions: ['sqs:SendMessageBatch'],
+      })
+    );
+
     const dbIteratorLambda = new lambda.Function(this, `DbIteratorLambda`, {
       functionName: `${props.scraperName}-${dbIteratorLambdaName}`,
       code: lambda.Code.fromBucket(props.lambdaS3Bucket, dbIteratorLambdaS3Key),
@@ -51,6 +61,9 @@ export class DbIteratorLambdaConstruct extends Construct {
       runtime: lambda.Runtime.NODEJS_14_X,
       reservedConcurrentExecutions: 1,
       role: dbIteratorLambdaRole,
+      environment: {
+        QUEUE_URL: queueUrl,
+      },
       layers: [props.optLambdaLayer],
     });
 
