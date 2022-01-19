@@ -68,7 +68,7 @@ echo "checking cloudformation template..."
 
 CLOUDFORMATION_TEMPLATE="cdk.out/$STACK_NAME.template.json"
 
-checkov --file $CLOUDFORMATION_TEMPLATE --skip-check "CKV_AWS_27,CKV_AWS_28,CKV_AWS_116,CKV_AWS_119" || post_and_exit "checkov validation failed"
+checkov --file $CLOUDFORMATION_TEMPLATE --skip-check "CKV_AWS_27,CKV_AWS_28,CKV_AWS_116,CKV_AWS_119,CKV_AWS_173" || post_and_exit "checkov validation failed"
 
 echo "starting cloudformation deployment..."
 

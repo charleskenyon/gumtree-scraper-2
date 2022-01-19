@@ -18,4 +18,4 @@ docker run --rm \
 -e AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY \
 -e QUEUE_URL=$QUEUE_URL \
 lambci/lambda:nodejs12.x \
-index.handler '{}'
+index.handler '{"Records":[{"receiptHandle":"AQEBIWh5Csd4EonvgGEA4erEYW/QGNCtHnSI5UiujMMO/XLjKP/TrOvUppZZv21k6HkkiS9IBG3wRT0y6zmQBPloZs+y2znX1HdbIUqqm0WU5zfHAXTi7LV64rT/MRmCKLvRnL1JE9UsSap1OqRFNif9Eulf3wVKbGDYj75oFC0YEtzbjzunt2hrsR4IGFm+F4+VUX1/PgvGFpFzMSlahmfpBvYz5SDT+0ybbOAJPMJEUZkAqmOVhZ5L33Nu+aKSp5SqSUxqGHOMAcksn/zkFUOxVLbE+YzGjbXfuvkeIrnVK2YZHRox7WhAgcSDaFQfOcGqXSgj4RbJcIh7O4eJwyhBB6UIhlSPvfWkDyeZzzDV+3gQI+beHy0EBDbqeI1cxqOoAKTdCvyAnR8eepz9h/iKRw==","body":"{\"category\":\"property-to-rent\",\"location\":\"london\",\"query\":\"2 bed flat\",\"emails\":[\"rory.kenyon01@gmail.com\",\"abby.grattan@hotmail.co.uk\"]}"}]}'

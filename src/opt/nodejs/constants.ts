@@ -11,4 +11,6 @@ AWS.config.update({
 
 const QUERY_TABLE_NAME = 'queryTable';
 
-export { AWS, QUERY_TABLE_NAME };
+const GUMTREE_URL = 'https://www.gumtree.com';
+
+export { AWS, QUERY_TABLE_NAME, GUMTREE_URL };
