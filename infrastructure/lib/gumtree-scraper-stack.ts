@@ -1,6 +1,7 @@
 import { Stack, StackProps, Tags } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
@@ -40,6 +41,15 @@ export class GumtreeScraperStack extends Stack {
       queueName: `${scraperName}-queue`,
     });
 
+    queryScraperQueue.addToResourcePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.ServicePrincipal('lambda.amazonaws.com')],
+        actions: ['sqs:SendMessage'],
+        resources: [queryScraperQueue.queueArn],
+      })
+    );
+
     new DbIteratorLambdaConstruct(this, 'DbIteratorLambdaConstruct', {
       scraperName,
       queryTable,
@@ -61,4 +71,3 @@ export class GumtreeScraperStack extends Stack {
 }
 
 // AWSLambdaDynamoDBExecutionRole
-// AWSLambdaSQSQueueExecutionRole

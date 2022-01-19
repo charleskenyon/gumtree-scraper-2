@@ -50,7 +50,7 @@ export default class DbIteratorLambdaConstruct extends Construct {
     dbIteratorLambdaRole.addToPolicy(
       new iam.PolicyStatement({
         resources: [props.queryScraperQueue.queueArn],
-        actions: ['sqs:SendMessageBatch'],
+        actions: ['sqs:SendMessage'],
       })
     );
 
