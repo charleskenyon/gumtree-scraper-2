@@ -41,22 +41,26 @@ export class GumtreeScraperStack extends Stack {
       queueName: `${scraperName}-queue`,
     });
 
+    const { dbIteratorLambdaRole } = new DbIteratorLambdaConstruct(
+      this,
+      'DbIteratorLambdaConstruct',
+      {
+        scraperName,
+        queryTable,
+        lambdaS3Bucket,
+        optLambdaLayer,
+        queryScraperQueue,
+      }
+    );
+
     queryScraperQueue.addToResourcePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        principals: [new iam.ServicePrincipal('lambda.amazonaws.com')],
+        principals: [new iam.ArnPrincipal(dbIteratorLambdaRole.roleArn)],
         actions: ['sqs:SendMessage'],
         resources: [queryScraperQueue.queueArn],
       })
     );
-
-    new DbIteratorLambdaConstruct(this, 'DbIteratorLambdaConstruct', {
-      scraperName,
-      queryTable,
-      lambdaS3Bucket,
-      optLambdaLayer,
-      queryScraperQueue,
-    });
 
     new QueryScraperLambdaConstruct(this, 'QueryScraperLambdaConstruct', {
       scraperName,

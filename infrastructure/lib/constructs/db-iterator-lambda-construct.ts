@@ -17,6 +17,8 @@ interface DbIteratorLambdaConstructStackProps extends StackProps {
 }
 
 export default class DbIteratorLambdaConstruct extends Construct {
+  public dbIteratorLambdaRole: iam.IRole;
+
   constructor(
     scope: Construct,
     id: string,
@@ -73,5 +75,7 @@ export default class DbIteratorLambdaConstruct extends Construct {
       enabled: false,
       targets: [new eventsTargets.LambdaFunction(dbIteratorLambda)],
     });
+
+    this.dbIteratorLambdaRole = dbIteratorLambdaRole;
   }
 }
