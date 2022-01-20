@@ -11,7 +11,9 @@ const extractListingData = (element: Element) => {
     location: $('.listing-location .truncate-line')
       .text()
       .replace(newLineRegex, ''),
-    id: $('article').attr('data-q').split('-')[1].replace(newLineRegex, ''),
+    id: Number(
+      $('article').attr('data-q').split('-')[1].replace(newLineRegex, '')
+    ),
     link:
       GUMTREE_URL + $('.listing-link').attr('href').replace(newLineRegex, ''),
   };
@@ -20,7 +22,8 @@ const extractListingData = (element: Element) => {
 const extractData = (html: string) => {
   const $ = cheerio.load(html);
   const listingElements = Array.from($('.list-listing-maxi .natural'));
-  return listingElements.map(extractListingData);
+  const listingItems = listingElements.map(extractListingData);
+  return listingItems.slice(0, 5); // take five most recent listings
 };
 
 export default extractData;

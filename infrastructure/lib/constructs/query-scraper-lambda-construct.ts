@@ -9,13 +9,14 @@ import { Construct } from 'constructs';
 
 interface QueryScraperLambdaConstructStackProps extends StackProps {
   readonly scraperName: string;
-  readonly queryTable: dynamodb.ITable;
+  readonly listingTable: dynamodb.ITable;
   readonly lambdaS3Bucket: s3.IBucket;
   readonly optLambdaLayer: lambda.ILayerVersion;
   readonly queryScraperQueue: sqs.IQueue;
 }
 
 export default class QueryScraperLambdaConstruct extends Construct {
+  readonly queryScraperLambdaRole: iam.IRole;
   constructor(
     scope: Construct,
     id: string,
@@ -44,8 +45,15 @@ export default class QueryScraperLambdaConstruct extends Construct {
 
     queryScraperLambdaRole.addToPolicy(
       new iam.PolicyStatement({
-        resources: [props.queryTable.tableArn],
+        resources: [props.listingTable.tableArn],
         actions: ['dynamodb:PutItem'],
+      })
+    );
+
+    queryScraperLambdaRole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [props.queryScraperQueue.queueArn],
+        actions: ['sqs:DeleteMessage'],
       })
     );
 
@@ -67,5 +75,7 @@ export default class QueryScraperLambdaConstruct extends Construct {
         batchSize: 1,
       })
     );
+
+    this.queryScraperLambdaRole = queryScraperLambdaRole;
   }
 }

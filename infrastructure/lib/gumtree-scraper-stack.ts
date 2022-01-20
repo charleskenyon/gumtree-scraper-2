@@ -1,4 +1,4 @@
-import { Stack, StackProps, Tags } from 'aws-cdk-lib';
+import { Stack, StackProps, Tags, RemovalPolicy } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -9,6 +9,10 @@ import {
   DbIteratorLambdaConstruct,
   QueryScraperLambdaConstruct,
 } from './constructs';
+import {
+  QUERY_TABLE_NAME,
+  LISTINGS_TABLE_NAME,
+} from '../../src/opt/nodejs/constants';
 
 export class GumtreeScraperStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -23,7 +27,18 @@ export class GumtreeScraperStack extends Stack {
       billingMode: dynamodb.BillingMode.PROVISIONED,
       readCapacity: 1,
       writeCapacity: 1,
-      tableName: 'queryTable',
+      tableName: QUERY_TABLE_NAME,
+    });
+
+    const listingTable = new dynamodb.Table(this, 'ListingsTable', {
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.NUMBER },
+      billingMode: dynamodb.BillingMode.PROVISIONED,
+      readCapacity: 1,
+      writeCapacity: 1,
+      tableName: LISTINGS_TABLE_NAME,
+      timeToLiveAttribute: 'ttl',
+      stream: dynamodb.StreamViewType.NEW_IMAGE,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const lambdaS3Bucket = s3.Bucket.fromBucketName(
@@ -53,6 +68,18 @@ export class GumtreeScraperStack extends Stack {
       }
     );
 
+    const { queryScraperLambdaRole } = new QueryScraperLambdaConstruct(
+      this,
+      'QueryScraperLambdaConstruct',
+      {
+        scraperName,
+        listingTable,
+        lambdaS3Bucket,
+        optLambdaLayer,
+        queryScraperQueue,
+      }
+    );
+
     queryScraperQueue.addToResourcePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -62,13 +89,14 @@ export class GumtreeScraperStack extends Stack {
       })
     );
 
-    new QueryScraperLambdaConstruct(this, 'QueryScraperLambdaConstruct', {
-      scraperName,
-      queryTable,
-      lambdaS3Bucket,
-      optLambdaLayer,
-      queryScraperQueue,
-    });
+    queryScraperQueue.addToResourcePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        principals: [new iam.ArnPrincipal(queryScraperLambdaRole.roleArn)],
+        actions: ['sqs:DeleteMessage'],
+        resources: [queryScraperQueue.queueArn],
+      })
+    );
 
     Tags.of(this).add('Application', 'Gumtree Scraper');
   }
