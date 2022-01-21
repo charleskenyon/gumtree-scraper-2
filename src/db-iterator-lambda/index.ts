@@ -1,10 +1,9 @@
 import R from 'ramda';
 import { v4 as uuidv4 } from 'uuid';
 import { getFormattedDynamoDbItems } from '/opt/nodejs/utils';
-import { AWS, QUERY_TABLE_NAME } from '/opt/nodejs/constants';
+import { AWS, QUERY_TABLE_NAME, QUEUE_URL } from '/opt/nodejs/constants';
 import { QueryItem } from '/opt/nodejs/types';
 
-const { QUEUE_URL } = process.env;
 const dynamoDb = new AWS.DynamoDB();
 const sqs = new AWS.SQS();
 

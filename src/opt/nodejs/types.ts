@@ -5,4 +5,13 @@ type QueryItem = {
   emails: string[];
 };
 
-export { QueryItem };
+type ListingItem = {
+  id: number;
+  title: string;
+  price: string;
+  location: string;
+  link: string;
+  emails: string[];
+};
+
+export { QueryItem, ListingItem };

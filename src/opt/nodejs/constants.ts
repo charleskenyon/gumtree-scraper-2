@@ -9,10 +9,12 @@ AWS.config.update({
   },
 });
 
+const QUEUE_URL = process.env.QUEUE_URL;
+
 const QUERY_TABLE_NAME = 'queryTable';
 
 const LISTINGS_TABLE_NAME = 'listingsTable';
 
 const GUMTREE_URL = 'https://www.gumtree.com';
 
-export { AWS, QUERY_TABLE_NAME, LISTINGS_TABLE_NAME, GUMTREE_URL };
+export { AWS, QUEUE_URL, QUERY_TABLE_NAME, LISTINGS_TABLE_NAME, GUMTREE_URL };

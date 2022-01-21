@@ -36,7 +36,6 @@ export class GumtreeScraperStack extends Stack {
       readCapacity: 1,
       writeCapacity: 1,
       tableName: LISTINGS_TABLE_NAME,
-      timeToLiveAttribute: 'ttl',
       stream: dynamodb.StreamViewType.NEW_IMAGE,
       removalPolicy: RemovalPolicy.DESTROY,
     });

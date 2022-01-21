@@ -1,4 +1,4 @@
-import { StackProps } from 'aws-cdk-lib';
+import { Duration, StackProps } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -28,6 +28,7 @@ export default class QueryScraperLambdaConstruct extends Construct {
     const queryScraperLambdaS3Key = this.node.tryGetContext(
       'queryScraperLambdaS3Key'
     );
+    const queueUrl = this.node.tryGetContext('queueUrl');
 
     const queryScraperLambdaRole = new iam.Role(
       this,
@@ -67,7 +68,11 @@ export default class QueryScraperLambdaConstruct extends Construct {
       runtime: lambda.Runtime.NODEJS_14_X,
       reservedConcurrentExecutions: 1,
       role: queryScraperLambdaRole,
+      environment: {
+        QUEUE_URL: queueUrl,
+      },
       layers: [props.optLambdaLayer],
+      timeout: Duration.seconds(20),
     });
 
     queryScraperLambda.addEventSource(
