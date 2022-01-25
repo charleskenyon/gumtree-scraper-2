@@ -1,15 +1,14 @@
+import R from 'ramda';
 import axios from 'axios';
 import { SQSEvent } from 'aws-lambda';
-import { formatRequestUrl, extractData, postListingsItems } from './lib';
-import { AWS, QUEUE_URL } from '/opt/nodejs/constants';
+import {
+  formatRequestUrl,
+  extractData,
+  postListingsItems,
+  deleteMessage,
+} from './lib';
+import { AWS } from '/opt/nodejs/constants';
 import { QueryItem } from '/opt/nodejs/types';
-
-const sqs = new AWS.SQS();
-
-const deleteMessage = (receiptHandle: string) =>
-  sqs
-    .deleteMessage({ QueueUrl: QUEUE_URL, ReceiptHandle: receiptHandle })
-    .promise();
 
 export const handler = async (
   event: SQSEvent
@@ -18,7 +17,7 @@ export const handler = async (
     Records: [{ body, receiptHandle }],
   } = event;
   const queryItem: QueryItem = JSON.parse(body);
-  const gumtreeRequestUrl = formatRequestUrl(queryItem);
+  const gumtreeRequestUrl = formatRequestUrl(R.dissoc('emails', queryItem));
   const response = await axios.get(gumtreeRequestUrl);
   const listingsData = extractData(response.data);
   const postResponse = await postListingsItems({

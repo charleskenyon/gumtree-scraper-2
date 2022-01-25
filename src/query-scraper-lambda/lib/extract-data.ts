@@ -6,11 +6,12 @@ const newLineRegex = /\r?\n|\r/g;
 const extractListingData = (element: Element) => {
   const $ = cheerio.load(element);
   return {
-    title: $('.listing-title').text().replace(newLineRegex, ''),
-    price: $('.listing-price').text().replace(newLineRegex, ''),
+    title: $('.listing-title').text().replace(newLineRegex, '').trim(),
+    price: $('.listing-price').text().replace(newLineRegex, '').trim(),
     location: $('.listing-location .truncate-line')
       .text()
-      .replace(newLineRegex, ''),
+      .replace(newLineRegex, '')
+      .trim(),
     id: Number(
       $('article').attr('data-q').split('-')[1].replace(newLineRegex, '')
     ),
