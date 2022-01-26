@@ -8,6 +8,7 @@ import { Construct } from 'constructs';
 import {
   DbIteratorLambdaConstruct,
   QueryScraperLambdaConstruct,
+  EmailNotificationLambdaConstruct,
 } from './constructs';
 import {
   QUERY_TABLE_NAME,
@@ -79,6 +80,17 @@ export class GumtreeScraperStack extends Stack {
       }
     );
 
+    new EmailNotificationLambdaConstruct(
+      this,
+      'EmailNotificationLambdaConstruct',
+      {
+        scraperName,
+        listingTable,
+        lambdaS3Bucket,
+        optLambdaLayer,
+      }
+    );
+
     queryScraperQueue.addToResourcePolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -100,5 +112,3 @@ export class GumtreeScraperStack extends Stack {
     Tags.of(this).add('Application', 'Gumtree Scraper');
   }
 }
-
-// AWSLambdaDynamoDBExecutionRole
