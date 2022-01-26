@@ -16,10 +16,12 @@ export const handler = async (
   const {
     Records: [{ body, receiptHandle }],
   } = event;
+  console.log(typeof body, body, Object.keys(body), JSON.parse(body));
   const queryItem: QueryItem = JSON.parse(body);
   const gumtreeRequestUrl = formatRequestUrl(R.dissoc('emails', queryItem));
   const response = await axios.get(gumtreeRequestUrl);
   const listingsData = extractData(response.data);
+  console.log(listingsData);
   const postResponse = await postListingsItems({
     listingsData,
     emails: queryItem.emails,

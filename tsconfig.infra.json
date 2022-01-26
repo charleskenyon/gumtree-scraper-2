@@ -18,7 +18,8 @@
   ],
   "exclude": [
     "src/**/*",
-    "./typings"
+    "./typings",
+    "test/**/*"
   ]
 }
    

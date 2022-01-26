@@ -55,15 +55,18 @@ describe('query scraper lambda integration test', () => {
       location,
     });
   });
+
   it('should call extractData with the html string returned from the gumtree request', () => {
     expect(extractDataSpy).toHaveBeenCalledWith(MOCK_GUMTREE_HTML);
   });
+
   it('should call postListingsItems with parsed gumtree data extracted from html', () => {
     expect(postListingsItemsSpy).toHaveBeenCalledWith({
       listingsData: MOCK_GUMTREE_PARSED_DATA,
       emails,
     });
   });
+
   it('should call AWS.DynamoDB.DocumentClient put method from postListingsItems once', () => {
     expect(dynamoDbPutSpy).toBeCalledTimes(1);
     expect(dynamoDbPutSpy).toBeCalledWith({
@@ -71,6 +74,7 @@ describe('query scraper lambda integration test', () => {
       TableName: LISTINGS_TABLE_NAME,
     });
   });
+
   it('should call deleteMessage with the receipt handle from the sqs event', () => {
     expect(deleteMessageSpy).toBeCalledWith(
       MOCK_EVENT.Records[0].receiptHandle

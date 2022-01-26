@@ -42,9 +42,9 @@ for LAMBDA_DIR in opt db-iterator-lambda query-scraper-lambda; do
     if [ $LAMBDA_DIR = "db-iterator-lambda" ]; then
         DB_ITERATOR_LAMBDA_S3_KEY=$S3_KEY
     elif [ $LAMBDA_DIR = "query-scraper-lambda" ]; then
-        QUERY_SCRAPER_LAMBDA_S3_KEY="${S3_KEY}"
+        QUERY_SCRAPER_LAMBDA_S3_KEY=$S3_KEY
     elif [ $LAMBDA_DIR = "opt" ]; then
-        OPT_S3_KEY="${S3_KEY}"
+        OPT_S3_KEY=$S3_KEY
     fi
 
     cd ../../
