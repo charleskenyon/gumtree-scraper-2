@@ -1,4 +1,4 @@
-import { StackProps } from 'aws-cdk-lib';
+import { StackProps, Stack } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
@@ -48,6 +48,9 @@ export default class EmailNotificationLambdaConstruct extends Construct {
     emailNotificationLambdaRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+        resources: [
+          `arn:aws:ses:eu-west-2:${Stack.of(this).account}:identity/*`,
+        ],
       })
     );
 

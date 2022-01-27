@@ -17,7 +17,7 @@ const generateSendEmailParams = (email: string, listings: ListingItem[]) => ({
       },
     },
 
-    Subject: { Data: listings.map(R.prop('title')).join(',') },
+    Subject: { Data: listings.map(R.prop('title')).join(', ') },
   },
   Source: email,
 });
