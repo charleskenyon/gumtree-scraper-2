@@ -45,6 +45,12 @@ export default class EmailNotificationLambdaConstruct extends Construct {
       }
     );
 
+    emailNotificationLambdaRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+      })
+    );
+
     const emailNotificationLambda = new lambda.Function(
       this,
       `EmailNotificationLambda`,

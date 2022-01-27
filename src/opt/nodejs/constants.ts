@@ -6,6 +6,7 @@ AWS.config.update({
   apiVersions: {
     dynamodb: '2012-08-10',
     sqs: '2012-11-05',
+    ses: '2010-12-01',
   },
 });
 

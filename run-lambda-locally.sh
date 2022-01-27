@@ -13,7 +13,7 @@ if [ $FOLDER_NAME = "db-iterator-lambda" ]; then
 elif [ $FOLDER_NAME = "query-scraper-lambda" ]; then
     EVENT="{\"Records\":[{\"receiptHandle\":\"AQEBIWh5Csd4EonvgGEA4erEYW/QGNCtHnSI5UiujMMO/XLjKP/TrOvUppZZv21k6HkkiS9IBG3wRT0y6zmQBPloZs+y2znX1HdbIUqqm0WU5zfHAXTi7LV64rT/MRmCKLvRnL1JE9UsSap1OqRFNif9Eulf3wVKbGDYj75oFC0YEtzbjzunt2hrsR4IGFm+F4+VUX1/PgvGFpFzMSlahmfpBvYz5SDT+0ybbOAJPMJEUZkAqmOVhZ5L33Nu+aKSp5SqSUxqGHOMAcksn/zkFUOxVLbE+YzGjbXfuvkeIrnVK2YZHRox7WhAgcSDaFQfOcGqXSgj4RbJcIh7O4eJwyhBB6UIhlSPvfWkDyeZzzDV+3gQI+beHy0EBDbqeI1cxqOoAKTdCvyAnR8eepz9h/iKRw==\",\"body\":\"{\\\"category\\\":\\\"property-to-rent\\\",\\\"location\\\":\\\"london\\\",\\\"query\\\":\\\"2+bed+flat\\\",\\\"emails\\\":[\\\"rory.kenyon01@gmail.com\\\"]}\"}]}"
 elif [ $FOLDER_NAME = "email-notification-lambda" ]; then
-    EVENT="{}"
+    EVENT="{\"Records\":[{\"eventName\":\"INSERT\",\"dynamodb\":{\"NewImage\":{\"location\":{\"S\":\"London\"},\"price\":{\"S\":\"£1,350pm\"},\"title\":{\"S\":\"flat\"},\"link\":{\"S\":\"https://www.gumtree.com/p/property-to-rent\"},\"emails\":{\"L\":[{\"S\":\"rory.kenyon01@gmail.com\"}]}}}}]}"
 fi
 
 echo "${EVENT}"
