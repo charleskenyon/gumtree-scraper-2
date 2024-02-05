@@ -65,7 +65,7 @@ export default class QueryScraperLambdaConstruct extends Construct {
         queryScraperLambdaS3Key
       ),
       handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       reservedConcurrentExecutions: 1,
       role: queryScraperLambdaRole,
       environment: {

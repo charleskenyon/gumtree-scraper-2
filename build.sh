@@ -30,8 +30,6 @@ for LAMBDA_DIR in opt db-iterator-lambda query-scraper-lambda email-notification
         cd "dist/$LAMBDA_DIR/nodejs"
         npm i
         cd ../
-    elif [ $LAMBDA_DIR = "email-notification-lambda" ]; then
-        cd "dist/$LAMBDA_DIR"
     else
         cp "src/$LAMBDA_DIR/package.json" "dist/$LAMBDA_DIR"
         cp "src/$LAMBDA_DIR/package-lock.json" "dist/$LAMBDA_DIR"

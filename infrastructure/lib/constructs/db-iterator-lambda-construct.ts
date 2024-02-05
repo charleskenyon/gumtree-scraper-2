@@ -60,7 +60,7 @@ export default class DbIteratorLambdaConstruct extends Construct {
       functionName: `${props.scraperName}-${dbIteratorLambdaName}`,
       code: lambda.Code.fromBucket(props.lambdaS3Bucket, dbIteratorLambdaS3Key),
       handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       reservedConcurrentExecutions: 1,
       role: dbIteratorLambdaRole,
       environment: {

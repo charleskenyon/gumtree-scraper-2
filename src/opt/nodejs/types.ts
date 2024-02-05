@@ -6,7 +6,7 @@ type QueryItem = {
 };
 
 type ListingItem = {
-  id: number;
+  id: string;
   title: string;
   price: string;
   location: string;

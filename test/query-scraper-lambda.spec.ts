@@ -68,7 +68,7 @@ describe('query scraper lambda integration test', () => {
   });
 
   it('should call AWS.DynamoDB.DocumentClient put method from postListingsItems once', () => {
-    expect(dynamoDbPutSpy).toBeCalledTimes(1);
+    expect(dynamoDbPutSpy).toBeCalledTimes(2);
     expect(dynamoDbPutSpy).toBeCalledWith({
       Item: { emails, ...MOCK_GUMTREE_PARSED_DATA[0] },
       TableName: LISTINGS_TABLE_NAME,

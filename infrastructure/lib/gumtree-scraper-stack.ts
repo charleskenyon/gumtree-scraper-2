@@ -48,7 +48,7 @@ export class GumtreeScraperStack extends Stack {
     );
 
     const optLambdaLayer = new lambda.LayerVersion(this, 'OptLambdaLayer', {
-      compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+      compatibleRuntimes: [lambda.Runtime.NODEJS_20_X],
       code: lambda.Code.fromBucket(lambdaS3Bucket, optS3Key),
     });
 

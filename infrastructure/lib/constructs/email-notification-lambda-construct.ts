@@ -64,7 +64,7 @@ export default class EmailNotificationLambdaConstruct extends Construct {
           emailNotificationLambdaS3Key
         ),
         handler: 'index.handler',
-        runtime: lambda.Runtime.NODEJS_14_X,
+        runtime: lambda.Runtime.NODEJS_20_X,
         reservedConcurrentExecutions: 5,
         role: emailNotificationLambdaRole,
         layers: [props.optLambdaLayer],

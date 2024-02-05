@@ -24,6 +24,6 @@ export const handler = async (
     listingsData,
     emails: queryItem.emails,
   });
-  await deleteMessage(receiptHandle);
+  receiptHandle && (await deleteMessage(receiptHandle));
   return postResponse;
 };
