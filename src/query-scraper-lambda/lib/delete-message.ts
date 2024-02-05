@@ -1,8 +1,12 @@
+import { DeleteMessageCommand } from '@aws-sdk/client-sqs';
 import { AWS, QUEUE_URL } from '/opt/nodejs/constants';
 
 const deleteMessage = (receiptHandle: string) =>
-  new AWS.SQS()
-    .deleteMessage({ QueueUrl: QUEUE_URL, ReceiptHandle: receiptHandle })
-    .promise();
+  AWS.sqsClient.send(
+    new DeleteMessageCommand({
+      QueueUrl: QUEUE_URL,
+      ReceiptHandle: receiptHandle,
+    })
+  );
 
 export default deleteMessage;
