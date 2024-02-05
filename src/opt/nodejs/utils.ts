@@ -1,9 +1,10 @@
 import R from 'ramda';
-import { AWS } from './constants';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
+import type { ScanOutput } from '@aws-sdk/client-dynamodb';
 
 const getFormattedDynamoDbItems = R.pipe(
   R.prop('Items'),
-  R.map(AWS.DynamoDB.Converter.unmarshall)
-) as <T>(data: AWS.DynamoDB.ScanOutput) => T[];
+  R.map(unmarshall)
+) as <T>(data: ScanOutput) => T[];
 
 export { getFormattedDynamoDbItems };

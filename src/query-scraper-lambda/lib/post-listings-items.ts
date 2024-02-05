@@ -1,7 +1,6 @@
+import { PutItemOutput, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { AWS, LISTINGS_TABLE_NAME } from '/opt/nodejs/constants';
 import { ListingItem } from '/opt/nodejs/types';
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 const postListingsItems = ({
   listingsData,
@@ -9,15 +8,22 @@ const postListingsItems = ({
 }: {
   listingsData: Omit<ListingItem, 'emails'>[];
   emails: ListingItem['emails'];
-}): Promise<AWS.DynamoDB.PutItemOutput[]> =>
+}): Promise<PutItemOutput[]> =>
   Promise.all(
     listingsData.map((listingData: Omit<ListingItem, 'emails'>) => {
-      return dynamoDb
-        .put({
+      return AWS.dynamoDbClient.send(
+        new PutItemCommand({
           TableName: LISTINGS_TABLE_NAME,
-          Item: { ...listingData, emails },
+          Item: {
+            title: { S: listingData.title },
+            price: { S: listingData.price },
+            location: { S: listingData.location },
+            link: { S: listingData.link },
+            emails: { SS: emails },
+            id: { S: listingData.id },
+          },
         })
-        .promise();
+      );
     })
   );
 

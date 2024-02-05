@@ -1,18 +1,16 @@
 import R from 'ramda';
 import axios from 'axios';
-import { SQSEvent } from 'aws-lambda';
+import type { SQSEvent } from 'aws-lambda';
+import { PutItemOutput } from '@aws-sdk/client-dynamodb';
 import {
   formatRequestUrl,
   extractData,
   postListingsItems,
   deleteMessage,
 } from './lib';
-import { AWS } from '/opt/nodejs/constants';
 import { QueryItem } from '/opt/nodejs/types';
 
-export const handler = async (
-  event: SQSEvent
-): Promise<AWS.DynamoDB.PutItemOutput[]> => {
+export const handler = async (event: SQSEvent): Promise<PutItemOutput[]> => {
   const {
     Records: [{ body, receiptHandle }],
   } = event;

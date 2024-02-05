@@ -1,12 +1,14 @@
 import R from 'ramda';
-import { DynamoDBStreamEvent } from 'aws-lambda';
-import { AWS } from '/opt/nodejs/constants';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
+import type { DynamoDBStreamEvent } from 'aws-lambda';
+import type { AttributeValue } from '@aws-sdk/client-dynamodb';
+import { SendEmailResponse } from '@aws-sdk/client-ses';
 import { ListingItem } from '/opt/nodejs/types';
 import { sendEmails } from './lib';
 
 export const handler = async (
   event: DynamoDBStreamEvent
-): Promise<AWS.SES.SendEmailResponse[]> => {
+): Promise<SendEmailResponse[]> => {
   const { Records: records } = event;
 
   const insertRecords = records.filter(
@@ -15,7 +17,7 @@ export const handler = async (
 
   const listings = insertRecords.map(
     ({ dynamodb: { NewImage } }) =>
-      AWS.DynamoDB.Converter.unmarshall(NewImage) as ListingItem
+      unmarshall(NewImage as Record<string, AttributeValue>) as ListingItem
   );
 
   const uniqueEmails = R.pipe(
