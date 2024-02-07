@@ -32,7 +32,7 @@ export class GumtreeScraperStack extends Stack {
     });
 
     const listingTable = new dynamodb.Table(this, 'ListingsTable', {
-      partitionKey: { name: 'id', type: dynamodb.AttributeType.NUMBER },
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PROVISIONED,
       readCapacity: 1,
       writeCapacity: 1,

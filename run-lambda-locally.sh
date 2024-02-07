@@ -27,5 +27,5 @@ docker run --rm \
 -e AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID \
 -e AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY \
 -e QUEUE_URL=$QUEUE_URL \
-lambci/lambda:nodejs12.x \
+public.ecr.aws/shogo82148/lambda-nodejs:20 \
 index.handler $EVENT

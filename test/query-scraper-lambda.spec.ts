@@ -1,6 +1,7 @@
 import url from 'url';
 import nock from 'nock';
 import sinon from 'sinon';
+import { PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { handler } from '../src/query-scraper-lambda';
 import * as lib from '../src/query-scraper-lambda/lib';
 import { AWS, GUMTREE_URL, LISTINGS_TABLE_NAME } from '/opt/nodejs/constants';
@@ -37,9 +38,7 @@ nock(GUMTREE_URL)
 
 describe('query scraper lambda integration test', () => {
   beforeAll(async () => {
-    sandbox
-      .stub(AWS.DynamoDB.DocumentClient.prototype, 'put')
-      .value(dynamoDbPutSpy);
+    sandbox.stub(AWS.dynamoDbClient, 'send').value(dynamoDbPutSpy);
     await handler(MOCK_EVENT);
   });
 
@@ -69,10 +68,21 @@ describe('query scraper lambda integration test', () => {
 
   it('should call AWS.DynamoDB.DocumentClient put method from postListingsItems once', () => {
     expect(dynamoDbPutSpy).toBeCalledTimes(2);
-    expect(dynamoDbPutSpy).toBeCalledWith({
-      Item: { emails, ...MOCK_GUMTREE_PARSED_DATA[0] },
-      TableName: LISTINGS_TABLE_NAME,
-    });
+    expect(JSON.stringify(dynamoDbPutSpy.mock.calls[0])).toEqual(
+      JSON.stringify([
+        new PutItemCommand({
+          TableName: LISTINGS_TABLE_NAME,
+          Item: {
+            title: { S: MOCK_GUMTREE_PARSED_DATA[0].title },
+            price: { S: MOCK_GUMTREE_PARSED_DATA[0].price },
+            location: { S: MOCK_GUMTREE_PARSED_DATA[0].location },
+            link: { S: MOCK_GUMTREE_PARSED_DATA[0].link },
+            emails: { SS: emails },
+            id: { S: MOCK_GUMTREE_PARSED_DATA[0].id },
+          },
+        }),
+      ])
+    );
   });
 
   it('should call deleteMessage with the receipt handle from the sqs event', () => {
