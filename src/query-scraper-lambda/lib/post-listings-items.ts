@@ -19,7 +19,11 @@ const postListingsItems = ({
             price: { S: listingData.price },
             location: { S: listingData.location },
             link: { S: listingData.link },
-            emails: { SS: emails },
+            emails: {
+              L: emails.map((email) => ({
+                S: email,
+              })),
+            },
             id: { S: listingData.id },
           },
         })

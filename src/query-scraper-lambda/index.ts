@@ -18,10 +18,12 @@ export const handler = async (event: SQSEvent): Promise<PutItemOutput[]> => {
   const gumtreeRequestUrl = formatRequestUrl(R.dissoc('emails', queryItem));
   const response = await axios.get(gumtreeRequestUrl);
   const listingsData = extractData(response.data);
+
   const postResponse = await postListingsItems({
     listingsData,
     emails: queryItem.emails,
   });
+
   receiptHandle && (await deleteMessage(receiptHandle));
   return postResponse;
 };

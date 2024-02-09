@@ -77,7 +77,7 @@ describe('query scraper lambda integration test', () => {
             price: { S: MOCK_GUMTREE_PARSED_DATA[0].price },
             location: { S: MOCK_GUMTREE_PARSED_DATA[0].location },
             link: { S: MOCK_GUMTREE_PARSED_DATA[0].link },
-            emails: { SS: emails },
+            emails: { L: emails.map((email: string) => ({ S: email })) },
             id: { S: MOCK_GUMTREE_PARSED_DATA[0].id },
           },
         }),

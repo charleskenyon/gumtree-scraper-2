@@ -7,7 +7,7 @@ const sendEmails = (uniqueEmails: string[], listings: ListingItem[]) =>
   Promise.all(
     uniqueEmails.map((email) => {
       const emailListings = listings.filter(({ emails }) =>
-        emails.includes(email)
+        emails?.includes(email)
       );
       return AWS.sesClient.send(
         new SendEmailCommand(generateSendEmailParams(email, emailListings))
