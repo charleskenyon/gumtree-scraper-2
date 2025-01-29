@@ -70,7 +70,7 @@ export default class DbIteratorLambdaConstruct extends Construct {
     });
 
     new events.Rule(this, 'DbIteratorLambdaScheduler', {
-      schedule: events.Schedule.rate(Duration.minutes(10)),
+      schedule: events.Schedule.rate(Duration.minutes(30)),
       ruleName: `${props.scraperName}-${dbIteratorLambdaName}-scheduler`,
       enabled: false,
       targets: [new eventsTargets.LambdaFunction(dbIteratorLambda)],

@@ -29,7 +29,7 @@ const extractListingData = (element: Element) => {
 
 const extractData = (html: string) => {
   const $ = cheerio.load(html);
-  const listingElements = Array.from($('.css-15qmqfw'));
+  const listingElements = Array.from($('.css-in27v8'));
   const listingItems = listingElements.map(extractListingData);
   return listingItems.slice(0, 5); // take five most recent listings
 };
